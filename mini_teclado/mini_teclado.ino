@@ -14,21 +14,23 @@ U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 
 // Nunca se muestra una contraseña, solo el nombre de la macro.
 const char* NOMBRES[] = {
-  "Entrar a BIOS (Del)",
-  "Clave BIOS",
-  "Navegar BIOS",
-  "Escribir 7 + Enter",
+  "Enter to BIOS (Del)",
+  "BIOS Password",
+  "Navegate BIOS",
+  "Write 7 + Enter",
   "Esc",
-  "F10 (guardar)",
+  "F10 (save)",
   "fs1:",
   "startup.nsh",
-  "Clave Windows"
+  "Windows Password",
+  "Info"
 };
 const uint8_t N = sizeof(NOMBRES) / sizeof(NOMBRES[0]);
 const uint8_t ID_NAVEGAR = 2;
+const uint8_t ID_INFO = N - 1;   // siempre el último de la lista
 const uint8_t FILAS = 5;
 
-enum Modo { MACROS, NAVEGAR };
+enum Modo { MACROS, NAVEGAR, INFO };
 enum Evento { NINGUNO, CLIC, DOBLE, LARGO };
 
 Modo modo = MACROS;
@@ -98,13 +100,29 @@ void dibujarNavegar() {
     u8g2.setDrawColor(1);
     u8g2.drawBox(0, 0, 128, 12);
     u8g2.setDrawColor(0);
-    u8g2.drawStr(4, 10, "NAVEGAR BIOS");
+    u8g2.drawStr(4, 10, "NAVEGATE BIOS");
     u8g2.setDrawColor(1);
-    u8g2.drawStr(4, 24, "Giro:");
-    u8g2.drawStr(40, 24, ejeVertical ? "ARRIBA/ABAJO" : "IZQ/DER");
+    u8g2.drawStr(4, 24, "Rotate:");
+    u8g2.drawStr(40, 24, ejeVertical ? "UP/DOWN" : "LFT/RHT");
     u8g2.drawStr(4, 38, "1 clic: Enter");
-    u8g2.drawStr(4, 50, "2 clics: cambia eje");
-    u8g2.drawStr(4, 62, "Largo: salir");
+    u8g2.drawStr(4, 50, "2 clics: change axis");
+    u8g2.drawStr(4, 62, "Long: exit");
+  } while (u8g2.nextPage());
+}
+
+void dibujarInfo() {
+  u8g2.firstPage();
+  do {
+    u8g2.setFont(u8g2_font_6x12_tf);
+    u8g2.setDrawColor(1);
+    u8g2.drawBox(0, 0, 128, 12);
+    u8g2.setDrawColor(0);
+    u8g2.drawStr(4, 10, "Designed by");
+    u8g2.setDrawColor(1);
+    u8g2.drawStr(4, 24, "Jorge Fernandez");
+    u8g2.drawStr(4, 38, "2026 - Room 3B");
+    u8g2.drawStr(4, 50, "R.H Electronics");
+    u8g2.drawStr(4, 62, "Lumenis");
   } while (u8g2.nextPage());
 }
 
@@ -112,7 +130,7 @@ void pantallaEnviando(const char* nombre) {
   u8g2.firstPage();
   do {
     u8g2.setFont(u8g2_font_7x14B_tf);
-    u8g2.drawStr(4, 24, "Enviando...");
+    u8g2.drawStr(4, 24, "Sending...");
     u8g2.setFont(u8g2_font_6x12_tf);
     u8g2.drawStr(4, 46, nombre);
   } while (u8g2.nextPage());
@@ -189,9 +207,17 @@ void loop() {
         modo = NAVEGAR;
         ejeVertical = true;
         dibujarNavegar();
+      } else if (sel == ID_INFO) {
+        modo = INFO;
+        dibujarInfo();
       } else {
         ejecutar(sel);
       }
+    }
+  } else if (modo == INFO) {
+    if (e != NINGUNO) {  // cualquier clic o pulsación larga vuelve al menú
+      modo = MACROS;
+      dibujarMacros();
     }
   } else {  // NAVEGAR
     if (d != 0) {
