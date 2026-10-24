@@ -26,6 +26,23 @@ Teclado USB mínimo para revisar máquinas con computadoras embebidas: lanza con
 - **Modo macros:** girar elige, un clic envía.
 - **Modo "Navegar BIOS":** girar envía flechas, 1 clic Enter, 2 clics cambia el eje (arriba/abajo ↔ izquierda/derecha), pulsación larga vuelve al modo macros.
 
+## Caja impresa en 3D
+
+![Miniteclado terminado](fotos/miniteclado.jpg)
+
+Carpeta `caja/`, diseñada en [SolidCraft](https://solidcraft.io/) con parámetros editables:
+
+- `Shell.3mf`: tapa superior con las paredes (ventana del OLED, agujero del encoder, recorte USB-C y cuatro postes para tornillos M3).
+- `Lid.3mf`: tapa inferior con los avellanados de los tornillos.
+- `Miniteclado macros - caja compacta.solidcraft`: el diseño original. Medidas principales: 58 × 34 × 27,5 mm más 2,4 mm de la tapa inferior.
+
+Detalles de montaje:
+
+- El OLED va apilado sobre el Pro Micro con espuma, y el conjunto cuelga de la tapa superior por cuatro clavijas de 1,9 mm.
+- Agujero del encoder de 8,6 mm (rosca de unos 8,2 mm) y perilla de unos 18,5 mm de diámetro.
+- Tornillos M3 autorroscantes en los cuatro postes; agujero guía de 2,5 mm.
+- La altura interior (25 mm) se debe a los pines del Pro Micro sin recortar y a los cables soldados. Si se recortan los pines, el parámetro `inner_h` puede bajar mucho.
+
 ## Probador de teclas
 
 `probador_teclas.py` abre una ventana (tkinter) que muestra cada tecla que recibe el Mac, con el tiempo entre teclas y un contador de Delete. Sirve para probar el miniteclado sin una BIOS delante.
